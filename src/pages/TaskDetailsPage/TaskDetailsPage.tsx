@@ -1,10 +1,13 @@
-import { Box, Typography, Button, Card, CardContent } from "@mui/material"
+import { Box, Typography, Card, CardContent } from "@mui/material"
 import { useParams, useNavigate } from "react-router"
 import { useQueryClient } from "@tanstack/react-query"
 import {
   getTasksFromMemory,
   saveTasksToMemory,
 } from "../../storage/tasksInMemoryStorage"
+import TaskField from "../../components/TaskField/TaskField"
+import StatusField from "../../components/StatusField/StatusField"
+import TaskActions from "../../components/TaskActions/TaskActions"
 
 const TaskDetailsPage = () => {
   const { taskId } = useParams()
@@ -20,13 +23,6 @@ const TaskDetailsPage = () => {
         <Typography>Задача не найдена</Typography>
       </Box>
     )
-  }
-
-  const getStatusName = (status: number) => {
-    if (status === 0) return "К выполнению"
-    if (status === 1) return "В работе"
-    if (status === 2) return "Выполнено"
-    return "Неизвестно"
   }
 
   const handleChangeStatus = (newStatus: number) => {
@@ -61,90 +57,19 @@ const TaskDetailsPage = () => {
             Задача #{task.taskId}
           </Typography>
 
-          <Box sx={{ marginBottom: 2 }}>
-            <Typography sx={{ color: "gray", fontSize: 13, fontWeight: 600, marginBottom: 0.5 }}>
-              НАЗВАНИЕ
-            </Typography>
-            <Typography sx={{ fontSize: 16, fontWeight: 500, color: "#333" }}>
-              {task.taskTitle}
-            </Typography>
-          </Box>
+          <TaskField label="НАЗВАНИЕ" value={task.taskTitle} />
+          <TaskField label="ОПИСАНИЕ" value={task.taskDescription ? task.taskDescription : "Нет описания"} />
+          <StatusField status={task.taskStatus} />
+          <TaskField label="ДАТА СОЗДАНИЯ" value={task.taskCreationDate.toLocaleDateString("ru-RU")} />
 
-          <Box sx={{ marginBottom: 2 }}>
-            <Typography sx={{ color: "gray", fontSize: 13, fontWeight: 600, marginBottom: 0.5 }}>
-              ОПИСАНИЕ
-            </Typography>
-            <Typography sx={{ fontSize: 15, color: "#555" }}>
-              {task.taskDescription ? task.taskDescription : "Нет описания"}
-            </Typography>
-          </Box>
+          <Box sx={{ marginBottom: 4 }} />
 
-          <Box sx={{ marginBottom: 2 }}>
-            <Typography sx={{ color: "gray", fontSize: 13, fontWeight: 600, marginBottom: 0.5 }}>
-              СТАТУС
-            </Typography>
-            <Typography sx={{ fontSize: 15, fontWeight: 600, color: "#667eea" }}>
-              {getStatusName(task.taskStatus)}
-            </Typography>
-          </Box>
-
-          <Box sx={{ marginBottom: 4 }}>
-            <Typography sx={{ color: "gray", fontSize: 13, fontWeight: 600, marginBottom: 0.5 }}>
-              ДАТА СОЗДАНИЯ
-            </Typography>
-            <Typography sx={{ fontSize: 15, color: "#555" }}>
-              {task.taskCreationDate.toLocaleDateString("ru-RU")}
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-            {task.taskStatus !== 0 && (
-              <Button
-                variant="contained"
-                onClick={() => handleChangeStatus(0)}
-                sx={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", fontWeight: 600 }}
-              >
-                К выполнению
-              </Button>
-            )}
-
-            {task.taskStatus !== 1 && (
-              <Button
-                variant="contained"
-                onClick={() => handleChangeStatus(1)}
-                sx={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", fontWeight: 600 }}
-              >
-                В работе
-              </Button>
-            )}
-
-            {task.taskStatus !== 2 && (
-              <Button
-                variant="contained"
-                onClick={() => handleChangeStatus(2)}
-                sx={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", fontWeight: 600 }}
-              >
-                Выполнено
-              </Button>
-            )}
-
-            <Button 
-              variant="contained" 
-              color="error" 
-              onClick={handleDelete}
-              sx={{ fontWeight: 600 }}
-            >
-              Удалить
-            </Button>
-
-            <Button 
-              variant="outlined" 
-              onClick={handleBack}
-              sx={{ color: "#667eea", borderColor: "#667eea", fontWeight: 600, "&:hover": { borderColor: "#764ba2", color: "#764ba2" } }}
-            >
-              Назад
-            </Button>
-          </Box>
+          <TaskActions
+            currentStatus={task.taskStatus}
+            onChangeStatus={handleChangeStatus}
+            onDelete={handleDelete}
+            onBack={handleBack}
+          />
         </CardContent>
       </Card>
     </Box>

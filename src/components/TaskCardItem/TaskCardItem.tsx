@@ -1,6 +1,8 @@
-import { Card, CardContent, Typography, Box } from "@mui/material"
+import { Card, CardContent, Box } from "@mui/material"
 import { useNavigate } from "react-router"
 import type { TaskModel } from "../../models/TaskModel"
+import TaskNumber from "./TaskNumber"
+import TaskTitle from "./TaskTitle"
 
 type TaskCardItemProps = {
   taskData: TaskModel
@@ -25,13 +27,9 @@ const TaskCardItem = ({ taskData }: TaskCardItemProps) => {
     >
       <CardContent sx={{ padding: "14px 16px", "&:last-child": { paddingBottom: "14px" } }}>
         <Box sx={{ display: "flex", alignItems: "center", marginBottom: 1 }}>
-          <Box sx={{ width: 24, height: 24, borderRadius: "50%", backgroundColor: "#667eea", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, marginRight: 1 }}>
-            {taskData.taskId}
-          </Box>
+          <TaskNumber taskId={taskData.taskId} />
         </Box>
-        <Typography sx={{ color: "#333", fontWeight: 500, fontSize: 14, lineHeight: 1.4 }}>
-          {taskData.taskTitle}
-        </Typography>
+        <TaskTitle title={taskData.taskTitle} />
       </CardContent>
     </Card>
   )
